@@ -68,36 +68,44 @@ chequeoD100(Dif, Res) :-
 
 latributos(estandar, [carisma, constitucion, destreza, fuerza, sabiduria, inteligencia]).
 
-%% personaje(Datos, Inventario)
+%% personaje(Datos, Inventa[]).rio)
 %% El predicado personaje, es una n-tupla de elementos con el cual identificamos
 %% a los personajes y que almacena todo lo referente a ellos
 
-personaje(Datos, Inventario):-
-  write('Escriba el nombre de su personaje ---> '),
-  readln(Name),
-  write('Escriba una descripcion de usted --->  '),
-  readln(Descripcion),
-  write('').
+crearPj(Datos, Inventario):- Datos is datosPersonaje(Nombre, Descripcion, Nivel,
+  Atributos, [],[],[],[]).
 
-datosPersonaje(Nombre, Descripcion, Nivel, Atributos, Curriculum, Habilidades,
-                Enfermedades, Trabajo).
+
+datosPersonaje(Nombre, Descripcion, Nivel, Atributos, [], [], [], []):-
+                  write('Escriba el nombre de su personaje ---> '),
+                  readln(Nombre),
+                  write('Escriba una descripcion de usted --->  '),
+                  readln(Descripcion),
+                  write('Tu nivel actual es ---> 1'),nl(),
+                  Nivel is 1,
+                  write('Los atributos que te ha concedido la naturaleza son --> '),
+                  generarAtributos(6, Atributos),nl(),
+                  write('CARISMA | CONSTITUCION | DESTREZA | FUERZA | SABIDURIA | INTELIGENCIA'),nl(),
+                  write(Atributos),nl(),
+                  write('De momento acabas de nacer, por lo que no has ejercicido ningun oficio'),nl(),
+                  write('Tambien careces de habilidades, porque estas recien salido del horno'),nl(),
+                  write('Pero estas sano cual arbol recien plantado'),nl(),
+                  write('¿Como vas a tener trabajo si no tienes curriculum, payaso?'),nl().
+
 datosInventario(Peso, CapacidadCargaMax, Dinero, Objetos).
 
-%%
-asignarAtributos([LAtrib|TAtrib], Punt, Final) :-
-  print('----------------------------'),!,
-  print('Atributo actual ---> '), write(LAtrib), nl(),
-  print('Elija la puntuacion a asignar entre ---> '), write(Punt), nl(),
-  read(Choose),
-  select(Choose, Punt, NewPunt), print(NewPunt),
-  asignarAtributos(TAtrib, NewPunt, FinalAux),
-  append(Choose, FinalAux, Final).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Asignar atributos queda aparcado por el momento, la vida es como es, y te %%
+%% jodes y juegas con lo que te toca
 
+/*
 asignarAtributos([], [], []).
+asignarAtributos([_],[],[X]):-asignarAtributos([_],[X],[]).
+*/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-%% generarAtributos(NumeroAtributos, AtributosGenerados)
-%% El predicado generarAtributos(N, Gen)
+%% generarAtributos(NumeroAtributos, []).AtributosGenerados)
+%% []).El predicado generarAtributos(N, Gen)
 
 generarAtributos(0, []).
 generarAtributos(N, Gen) :-
@@ -130,6 +138,9 @@ menor([H,K|T],M) :-
 menor([H,K|T],M) :-
   H > K,
   menor([K|T],M).
+
+ind(E,[E|_],0):- !.
+ind(E,[_|T],I):- ind(E,T,X), I is X + 1.
 
 %% sumaLista(Lista, Resultado) :- sumaLista([Cabeza|Cola], Acumulado, Resultado)
 %% El predicado sumaLista(L, Res), es un predicado que funciona con un
