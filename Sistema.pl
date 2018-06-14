@@ -66,6 +66,8 @@ chequeoD100(Dif, Res) :-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% PERSONAJES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+latributos(estandar, [carisma, constitucion, destreza, fuerza, sabiduria, inteligencia]).
+
 %% personaje(Datos, Inventario)
 %% El predicado personaje, es una n-tupla de elementos con el cual identificamos
 %% a los personajes y que almacena todo lo referente a ellos
@@ -81,13 +83,34 @@ datosPersonaje(Nombre, Descripcion, Nivel, Atributos, Curriculum, Habilidades,
                 Enfermedades, Trabajo).
 datosInventario(Peso, CapacidadCargaMax, Dinero, Objetos).
 
-generarAtributos([],[]).
+%%
+asignarAtributos([LAtrib|TAtrib], Punt, Final) :-
+  print('----------------------------'),!,
+  print('Atributo actual ---> '), write(LAtrib), nl(),
+  print('Elija la puntuacion a asignar entre ---> '), write(Punt), nl(),
+  read(Choose),
+  select(Choose, Punt, NewPunt), print(NewPunt),
+  asignarAtributos(TAtrib, NewPunt, FinalAux),
+  append(Choose, FinalAux, Final).
 
-% tiradaAtributo(AtributoGenerado)
-% El predicado tiradaAtributo(Gen), es un predicado que devuelve el resultado
-% de la tirada de puntuacion de un atributo. El proceso que efectua es lanzar
-% 4 dados de 6, quitando el menor de esos dados.
-% El corte se aplica por si hay duplicados, que no lo efectue varias veces.
+asignarAtributos([], [], []).
+
+
+%% generarAtributos(NumeroAtributos, AtributosGenerados)
+%% El predicado generarAtributos(N, Gen)
+
+generarAtributos(0, []).
+generarAtributos(N, Gen) :-
+  NewN is N - 1,
+  tiradaAtributo(At),
+  generarAtributos(NewN, GenAux),
+  append([At], GenAux, Gen), !.
+
+%% tiradaAtributo(AtributoGenerado)
+%% El predicado tiradaAtributo(Gen), es un predicado que devuelve el resultado
+%% de la tirada de puntuacion de un atributo. El proceso que efectua es lanzar
+%% 4 dados de 6, quitando el menor de esos dados.
+%% El corte se aplica por si hay duplicados, que no lo efectue varias veces.
 
 tiradaAtributo(Gen) :-
   dadoXtimes(4, d20, 6, List),
@@ -96,9 +119,9 @@ tiradaAtributo(Gen) :-
   sumaLista(List2, Gen),
   !.
 
-% menor(Lista, Minimo)
-% El predicado menor(L, Min), devuelve el menor de los elementos de una
-% determinada Lista L.
+%% menor(Lista, Minimo)
+%% El predicado menor(L, Min), devuelve el menor de los elementos de una
+%% determinada Lista L.
 
 menor([Min],Min).
 menor([H,K|T],M) :-
@@ -108,9 +131,9 @@ menor([H,K|T],M) :-
   H > K,
   menor([K|T],M).
 
-% sumaLista(Lista, Resultado) :- sumaLista([Cabeza|Cola], Acumulado, Resultado)
-% El predicado sumaLista(L, Res), es un predicado que funciona con un
-% acumulador, el cual suma todos los elementos de una determinada Lista.
+%% sumaLista(Lista, Resultado) :- sumaLista([Cabeza|Cola], Acumulado, Resultado)
+%% El predicado sumaLista(L, Res), es un predicado que funciona con un
+%% acumulador, el cual suma todos los elementos de una determinada Lista.
 
 sumaLista(L, Res):-
   sumaLista(L, 0, Res).
